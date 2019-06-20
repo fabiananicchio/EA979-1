@@ -69,7 +69,7 @@ def plot_graph(threadName, lock, chunk_shared, is_playing_audio):
    lock.release()
    plt.show()
    while is_playing_audio == 1:
-      print(is_p laying_audio)
+      print(is_playing_audio)
 
 
 def process_data(threadName, lock, chunk_shared, is_playing_audio):
@@ -102,7 +102,7 @@ def process_data(threadName, lock, chunk_shared, is_playing_audio):
    stream.close()
    p.terminate
 
-def print_model():
+def print_model(threadName, lock, chunk_shared, is_playing_audio):
    data = plyfile.PlyData.read('g.ply')['vertex']
 
    xyz = np.c_[data['x'], data['y'], data['z']]          # Eixos
@@ -216,17 +216,17 @@ if __name__ == "__main__":
 
     # creating processes
     p1 = multiprocessing.Process(target=print_cube, args=(10, vector, lock))
-    p2 = multiprocessing.Process(target=print_model, args=( ))
+    p2 = multiprocessing.Process(target=print_model, args=("Thread-2", chunk_shared, lock, is_playing_audio))
     p3 = multiprocessing.Process(target=print_time, args=("Thread-3",2))
     p4 = multiprocessing.Process(target=play_sound, args=("Thread-4",2, chunk_shared, lock, is_playing_audio))
-    p5 = multiprocessing.Process(target=plot_graph, args=("Thread-5", lock, chunk_shared, is_playing_audio))
+    #p5 = multiprocessing.Process(target=plot_graph, args=("Thread-5", lock, chunk_shared, is_playing_audio))
     p6 = multiprocessing.Process(target=process_data, args=("Thread-6", lock, chunk_shared, is_playing_audio))
     # starting process
     p1.start()
     p2.start()
     p3.start()
     p4.start()
-    p5.start()
+    #p5.start()
     p6.start()
 
     # wait until the process is finished
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     #print(chunk_shared[:])
 
     p4.join()
-    p5.join()
+    #p5.join()
     p6.join()
 
     # all the processes finished
